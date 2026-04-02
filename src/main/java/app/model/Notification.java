@@ -35,6 +35,10 @@ public class Notification {
     @Enumerated(EnumType.STRING)
     private NotificationStatus status;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private NotificationType type;
+
     private UUID userId;
 
     private boolean isDeleted;

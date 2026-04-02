@@ -3,11 +3,13 @@ package app.service;
 import app.model.Notification;
 import app.model.NotificationPreference;
 import app.model.NotificationStatus;
+import app.model.NotificationType;
 import app.repository.NotificationPreferenceRepository;
 import app.repository.NotificationRepository;
 import app.web.Dto.NotificationRequest;
 import app.web.Dto.UpsertNotificationPreference;
 import app.web.mapper.DtoMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -18,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class NotificationService {
 
     private final NotificationPreferenceRepository preferenceRepository;
@@ -105,12 +108,15 @@ public class NotificationService {
         message.setSubject(notificationRequest.getSubject());
         message.setText(notificationRequest.getBody()); // Ще изпрати нотификацията от email-a, който сме конфигурирали в application.properties(паролата там си я взимаме от настройките в профила ни в gmail)
 
+
+        //Създаваме нотификацията за да може да се запази в базата данни и да има проследимост
         Notification notification = Notification.builder()
                 .subject(notificationRequest.getSubject())
                 .body(notificationRequest.getBody())
                 .createdOn(LocalDateTime.now())
                 .userId(userId)
                 .isDeleted(false)
+                .type(NotificationType.EMAIL)
                 .build();
 
         //  mailSender- идва от библиотека spring-boot-starter-mail в pom.xml
@@ -119,6 +125,7 @@ public class NotificationService {
             notification.setStatus(NotificationStatus.SUCCEEDED);
         }catch (Exception e){
             notification.setStatus(NotificationStatus.FAILED);
+            log.error("There was an issue sending an email to %s due to %s.".formatted(userPreferences.getContactInfo(), e.getMessage()));
         }
 
         return notificationRepository.save(notification);

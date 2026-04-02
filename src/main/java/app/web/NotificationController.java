@@ -63,9 +63,14 @@ public class NotificationController {
     @PostMapping
     public ResponseEntity<NotificationResponse> sendNotification(@RequestBody NotificationRequest notificationRequest) {
 
+        // Entity
         Notification notification = notificationService.sendNotification(notificationRequest);
 
-        return  null;
+        // От entity трябва да направим DTO(чрез DtoMapper), за да се визуализира на потребителя
+        NotificationResponse notificationResponse = DtoMapper.fromNotification(notification);
+
+        return  ResponseEntity.status(HttpStatus.CREATED)
+                .body(notificationResponse);
     }
 
 }

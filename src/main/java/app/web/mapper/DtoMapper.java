@@ -1,7 +1,9 @@
 package app.web.mapper;
 
+import app.model.Notification;
 import app.model.NotificationPreference;
 import app.model.NotificationType;
+import app.web.Dto.NotificationResponse;
 import app.web.Dto.NotificationTypeRequest;
 import app.web.Dto.NotificationPreferenceResponse;
 import lombok.experimental.UtilityClass;
@@ -33,5 +35,24 @@ public class DtoMapper {
                 .enabled(entity.isEnabled())
                 .userId(entity.getUserId())
                 .build();
+    }
+
+    public static NotificationResponse fromNotification(Notification notification) {
+
+        // Алтернативата на тези мапъри, които си създаваме сами е някоя външна библиотека,
+        // например като ModelMapper, но в работна среда външните библиотеки рядко се използват, още повече че ModelMapper не идва от Spring,
+        // както и допълнително усложнява процеса, защото използва reflection
+
+
+        // NotificationResponse - dto
+        // Notification - entity
+
+        return NotificationResponse.builder()
+                .subject(notification.getSubject())
+                .createdOn(notification.getCreatedOn())
+                .status(notification.getStatus())
+                .type(notification.getType())
+                .build();
+
     }
 }
