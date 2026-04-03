@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -71,6 +72,19 @@ public class NotificationController {
 
         return  ResponseEntity.status(HttpStatus.CREATED)
                 .body(notificationResponse);
+    }
+
+
+    @GetMapping
+    public ResponseEntity <List<NotificationResponse>> getNotificationHistory(@RequestParam(name = "userId") UUID userId) {
+
+        List<NotificationResponse> notificationResponses = notificationService.getNotificationHistory(userId)
+                .stream()
+                .map(DtoMapper::fromNotification).toList();
+
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(notificationResponses);
     }
 
 }

@@ -7,15 +7,20 @@ import app.model.NotificationType;
 import app.repository.NotificationPreferenceRepository;
 import app.repository.NotificationRepository;
 import app.web.Dto.NotificationRequest;
+import app.web.Dto.NotificationResponse;
 import app.web.Dto.UpsertNotificationPreference;
 import app.web.mapper.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -129,5 +134,11 @@ public class NotificationService {
         }
 
         return notificationRepository.save(notification);
+    }
+
+
+    public List<Notification> getNotificationHistory(UUID userId) {
+
+        return notificationRepository.findAllByUserIdAndIsDeletedIsFalse(userId);
     }
 }
