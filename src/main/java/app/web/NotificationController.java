@@ -47,7 +47,7 @@ public class NotificationController {
     }
 
     @GetMapping("/preferences/{userId}") // Правим този метод за да се визуализира страницата с предпочитания на потребителя
-    public ResponseEntity<NotificationPreferenceResponse> getUserNotificationPreferences(@RequestParam(name = "userId") UUID userId) {
+    public ResponseEntity<NotificationPreferenceResponse> getUserNotificationPreferences(@PathVariable UUID userId) {
 
        NotificationPreference notificationPreference = notificationService.getPreferencesByUserId(userId);// какви са конкретните предпочитания на даден потребител
 
@@ -76,7 +76,7 @@ public class NotificationController {
 
 
     @GetMapping
-    public ResponseEntity <List<NotificationResponse>> getNotificationHistory(@RequestParam(name = "userId") UUID userId) {
+    public ResponseEntity <List<NotificationResponse>> getNotificationHistory(@RequestParam(name = "userId") UUID userId) { // освен @RequestParam може да се добави и @RequestBody
 
         List<NotificationResponse> notificationResponses = notificationService.getNotificationHistory(userId)
                 .stream()
@@ -85,6 +85,13 @@ public class NotificationController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(notificationResponses);
+    }
+
+    // Endpoint: /api/v1/notifications/test = "Hello," + name + "."
+    @GetMapping("/test")
+    public ResponseEntity<String> getHelloWorld(@RequestParam(name = "name") String name) {
+
+        return ResponseEntity.ok("Hello," + name + ".");
     }
 
 }
